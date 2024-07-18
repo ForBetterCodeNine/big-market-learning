@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: big-market-learning-app
+  profiles:
+    active: dev
