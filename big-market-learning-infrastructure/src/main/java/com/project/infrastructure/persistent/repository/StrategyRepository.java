@@ -111,4 +111,13 @@ public class StrategyRepository implements IStrategyRepository {
         redisService.setValue(cacheKey, strategyRuleEntity);
         return strategyRuleEntity;
     }
+
+    @Override
+    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+        StrategyRule rule = new StrategyRule();
+        rule.setStrategyId(strategyId);
+        rule.setAwardId(awardId);
+        rule.setRuleModel(ruleModel);
+        return strategyRuleDao.queryStrategyRuleValue(rule);
+    }
 }

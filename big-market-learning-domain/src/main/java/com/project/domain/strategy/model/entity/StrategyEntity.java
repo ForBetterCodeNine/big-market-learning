@@ -2,6 +2,7 @@ package com.project.domain.strategy.model.entity;
 
 import com.project.types.common.Constants;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class StrategyEntity {
 
     private Long strategyId;
@@ -17,7 +19,7 @@ public class StrategyEntity {
 
     private String ruleModels;
 
-    private String[] ruleModels() {
+    public String[] ruleModels() {
         if(StringUtils.isBlank(ruleModels)) return null;
         return ruleModels.split(Constants.SPLIT);
     }
