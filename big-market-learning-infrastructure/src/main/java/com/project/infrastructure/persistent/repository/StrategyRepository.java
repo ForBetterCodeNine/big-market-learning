@@ -1,9 +1,15 @@
 package com.project.infrastructure.persistent.repository;
 
 import com.project.domain.strategy.model.entity.StrategyAwardEntity;
+import com.project.domain.strategy.model.entity.StrategyEntity;
+import com.project.domain.strategy.model.entity.StrategyRuleEntity;
 import com.project.domain.strategy.repository.IStrategyRepository;
 import com.project.infrastructure.persistent.dao.IStrategyAwardDao;
+import com.project.infrastructure.persistent.dao.IStrategyDao;
+import com.project.infrastructure.persistent.dao.IStrategyRuleDao;
+import com.project.infrastructure.persistent.po.Strategy;
 import com.project.infrastructure.persistent.po.StrategyAward;
+import com.project.infrastructure.persistent.po.StrategyRule;
 import com.project.infrastructure.persistent.redis.IRedisService;
 import com.project.types.common.Constants;
 import org.springframework.stereotype.Repository;
@@ -21,6 +27,12 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Resource
     private IRedisService redisService;
+
+    @Resource
+    private IStrategyDao strategyDao;
+
+    @Resource
+    private IStrategyRuleDao strategyRuleDao;
 
     @Override
     public List<StrategyAwardEntity> queryStrategyAwardEntityList(Long strategyId) {
@@ -46,20 +58,57 @@ public class StrategyRepository implements IStrategyRepository {
     }
 
     @Override
-    public void storeStrategyAwardEntityRateTables(Long strategyId, Integer rateRange, Map<Integer, Integer> map) {
+    public void storeStrategyAwardEntityRateTables(String key, Integer rateRange, Map<Integer, Integer> map) {
         //把某个策略下 对应的奖品转换后的下标信息 以及随机数的范围 存放到redis中
-        redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + strategyId, rateRange);
-        Map<Integer, Integer> searchTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + strategyId);
+        redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
+        Map<Integer, Integer> searchTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         searchTable.putAll(map);
     }
 
     @Override
     public Integer getRateRangeByStrategyId(Long strategyId) {
-        return redisService.getValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + strategyId);
+        return getRateRangeByStrategyId(String.valueOf(strategyId));
     }
 
     @Override
-    public Integer getStrategyRandom(Long strategyId, Integer rateKey) {
-        return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + strategyId, rateKey);
+    public Integer getRateRangeByStrategyId(String key) {
+        return redisService.getValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key);
+    }
+
+
+    @Override
+    public Integer getStrategyRandom(String key, Integer rateKey) {
+        return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key, rateKey);
+    }
+
+    @Override
+    public StrategyEntity queryStrategyByStrategyId(Long strategyId) {
+        String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
+        StrategyEntity strategyEntity = redisService.getValue(cacheKey);
+        if(strategyEntity != null) return strategyEntity;
+        strategyEntity = new StrategyEntity();
+        Strategy strategy = strategyDao.queryStrategyByStrategyId(strategyId);
+        strategyEntity.setStrategyId(strategy.getStrategyId());
+        strategyEntity.setRuleModels(strategy.getRuleModels());
+        strategyEntity.setStrategyDesc(strategy.getStrategyDesc());
+        redisService.setValue(cacheKey, strategyEntity);
+        return strategyEntity;
+    }
+
+    @Override
+    public StrategyRuleEntity queryStrategyRuleByStrategyIdAndRuleWeight(Long strategyId, String ruleModel) {
+        String cacheKey = Constants.RedisKey.STRATEGY_RULE_KEY + strategyId;
+        StrategyRuleEntity strategyRuleEntity = redisService.getValue(cacheKey);
+        if(strategyRuleEntity != null) return strategyRuleEntity;
+        StrategyRule strategyRule = strategyRuleDao.queryStrategyRuleByStrategyIdAndRuleWeight(strategyId, ruleModel);
+        strategyRuleEntity = new StrategyRuleEntity();
+        strategyRuleEntity.setStrategyId(strategyRule.getStrategyId());
+        strategyRuleEntity.setRuleValue(strategyRule.getRuleValue());
+        strategyRuleEntity.setRuleType(strategyRule.getRuleType());
+        strategyRuleEntity.setAwardId(strategyRule.getAwardId());
+        strategyRuleEntity.setRuleDesc(strategyRule.getRuleDesc());
+        strategyRuleEntity.setRuleModel(strategyRule.getRuleModel());
+        redisService.setValue(cacheKey, strategyRuleEntity);
+        return strategyRuleEntity;
     }
 }
