@@ -40,7 +40,7 @@ public class RuleWeightLogicFilter implements ILogicFilter<RuleActionEntity.Raff
         Long strategyId = ruleMatterEntity.getStrategyId();
         String ruleValue = strategyRepository.queryStrategyRuleValue(ruleMatterEntity.getStrategyId(), ruleMatterEntity.getAwardId(), ruleMatterEntity.getRuleModel());
         Map<Long, String> map = getAnalyticalValue(ruleValue);
-        if(null == map || map.isEmpty()) {
+        if(null == map || map.isEmpty() || !ruleMatterEntity.getRuleModel().equals("rule_weight")) {
             return RuleActionEntity.<RuleActionEntity.RaffleBeforeEntity>builder()
                     .code(RuleLogicCheckTypeVO.ALLOW.getCode())
                     .info(RuleLogicCheckTypeVO.ALLOW.getInfo())

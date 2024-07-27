@@ -32,6 +32,13 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy{
 
     @Override
     protected RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> doCheckRaffleBeforeLogic(RaffleFactorEntity factorEntity, String... logics) {
+        if(null == logics || logics.length == 0) {
+            return RuleActionEntity.<RuleActionEntity.RaffleBeforeEntity>builder()
+                    .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                    .info(RuleLogicCheckTypeVO.ALLOW.getInfo())
+                    .build();
+        }
+
         Map<String, ILogicFilter<RuleActionEntity.RaffleBeforeEntity>> filterMap = defaultLogicFactory.openLogicFilter();
         //优先过滤黑名单规则
         String ruleBlackList = Arrays.stream(logics)
@@ -69,6 +76,30 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy{
             if (!RuleLogicCheckTypeVO.ALLOW.getCode().equals(ruleActionEntity.getCode())) return ruleActionEntity;
         }
 
+        return ruleActionEntity;
+    }
+
+    @Override
+    protected RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity factorEntity, String... logics) {
+        if(null == logics || logics.length == 0) {
+            return RuleActionEntity.<RuleActionEntity.RaffleCenterEntity>builder()
+                    .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                    .info(RuleLogicCheckTypeVO.ALLOW.getInfo())
+                    .build();
+        }
+        Map<String, ILogicFilter<RuleActionEntity.RaffleCenterEntity>> filterMap = defaultLogicFactory.openLogicFilter();
+        RuleActionEntity<RuleActionEntity.RaffleCenterEntity> ruleActionEntity = null;
+        for(String ruleModel : logics) {
+            ILogicFilter<RuleActionEntity.RaffleCenterEntity> logicFilter = filterMap.get(ruleModel);
+            RuleMatterEntity ruleMatterEntity = new RuleMatterEntity();
+            ruleMatterEntity.setUserId(factorEntity.getUserId());
+            ruleMatterEntity.setStrategyId(factorEntity.getStrategyId());
+            ruleMatterEntity.setAwardId(factorEntity.getAwardId());
+            ruleMatterEntity.setRuleModel(ruleModel);
+            ruleActionEntity = logicFilter.filter(ruleMatterEntity);
+            log.info("抽奖中规则过滤 userId: {} ruleModel: {} code: {} info: {}", factorEntity.getUserId(), ruleModel, ruleActionEntity.getCode(), ruleActionEntity.getInfo());
+            if(!RuleLogicCheckTypeVO.ALLOW.getCode().equals(ruleActionEntity.getCode())) return ruleActionEntity;
+        }
         return ruleActionEntity;
     }
 }

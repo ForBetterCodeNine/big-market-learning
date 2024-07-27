@@ -5,6 +5,7 @@ import com.project.domain.strategy.model.entity.RaffleFactorEntity;
 import com.project.domain.strategy.model.entity.RuleActionEntity;
 import com.project.domain.strategy.model.entity.StrategyEntity;
 import com.project.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.project.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.project.domain.strategy.repository.IStrategyRepository;
 import com.project.domain.strategy.service.IRaffleStrategy;
 import com.project.domain.strategy.service.armory.IStrategyDispatch;
@@ -65,10 +66,29 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         // 4. 默认抽奖流程
         Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
 
+        //根据奖品id和规则id 查表strategy_award 看对应的配置
+        StrategyAwardRuleModelVO strategyAwardRuleModelVO = strategyRepository.queryStrategyRuleModelsByStrategyIdAndAwardId(strategyId, awardId);
+        factor.setAwardId(awardId);
+        factor.setStrategyId(strategyId);
+        factor.setUserId(userId);
+
+        String[] ruleModels = strategyAwardRuleModelVO.getRuleModels();
+
+        RuleActionEntity<RuleActionEntity.RaffleCenterEntity> ruleCenterAction = doCheckRaffleCenterLogic(factorEntity, ruleModels);
+
+        if(RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(ruleCenterAction.getCode())) {
+            log.info("【临时日志】中奖中规则拦截，通过抽奖后规则 rule_luck_award 走兜底奖励。");
+            return RaffleAwardEntity.builder()
+                    .awardDesc("中奖中规则拦截，通过抽奖后规则 rule_luck_award 走兜底奖励。")
+                    .build();
+        }
+
         return RaffleAwardEntity.builder()
                 .awardId(awardId)
                 .build();
     }
 
     protected abstract RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> doCheckRaffleBeforeLogic(RaffleFactorEntity factorEntity, String...logics);
+
+    protected abstract RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity factorEntity, String...logics);
 }

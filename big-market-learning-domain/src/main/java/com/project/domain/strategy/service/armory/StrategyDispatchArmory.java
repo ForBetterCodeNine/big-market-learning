@@ -32,6 +32,7 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
         //如果对应的策略id 有权重配置 则需要装配对应的权重奖品
         //根据策略id 查找表strategy
         StrategyEntity strategyEntity = strategyRepository.queryStrategyByStrategyId(strategyId);
+        if(strategyEntity.ruleModels() == null || strategyEntity.ruleModels().length == 0) return true;
         String ruleWeight = strategyEntity.getRuleWeight();
         if(ruleWeight == null) return true;
         //不为null 则需要进行权重装配
