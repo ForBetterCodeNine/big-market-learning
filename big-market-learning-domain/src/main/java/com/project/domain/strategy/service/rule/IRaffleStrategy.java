@@ -1,4 +1,4 @@
-package com.project.domain.strategy.service;
+package com.project.domain.strategy.service.rule;
 
 import com.project.domain.strategy.model.entity.RaffleAwardEntity;
 import com.project.domain.strategy.model.entity.RaffleFactorEntity;
