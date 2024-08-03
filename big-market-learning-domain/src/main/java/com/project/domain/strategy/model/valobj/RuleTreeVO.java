@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RuleTreeVO {
-    private Integer treeId;
+    private String treeId;
 
     //规则树名称
     private String treeName;

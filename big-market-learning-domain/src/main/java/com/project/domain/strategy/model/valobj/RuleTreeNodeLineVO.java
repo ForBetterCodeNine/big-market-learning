@@ -1,15 +1,19 @@
 package com.project.domain.strategy.model.valobj;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 规则树连线
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RuleTreeNodeLineVO {
-    private Integer treeId;
+    private String treeId;
 
     //上一个节点
     private String ruleNodeFrom;
