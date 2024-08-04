@@ -6,4 +6,6 @@ public interface IStrategyDispatch {
 
     //在积分规则下  获取某个奖品
     Integer getRandomAwardId(Long strategyId, String ruleValue);
+
+    Boolean subtractionAwardStock(Long strategyId, Integer awardId);
 }

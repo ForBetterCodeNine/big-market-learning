@@ -4,6 +4,7 @@ import com.project.domain.strategy.model.entity.StrategyAwardEntity;
 import com.project.domain.strategy.model.entity.StrategyEntity;
 import com.project.domain.strategy.model.entity.StrategyRuleEntity;
 import com.project.domain.strategy.repository.IStrategyRepository;
+import com.project.types.common.Constants;
 import com.project.types.enums.ResponseCode;
 import com.project.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,12 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
     public boolean strategyArmory(Long strategyId) {
         //首先拿到策略对应的奖品实体
         List<StrategyAwardEntity> strategyAwardEntities = strategyRepository.queryStrategyAwardEntityList(strategyId);
+        //缓存奖品库存 用于redis进行库存扣减操作
+        for(StrategyAwardEntity entity : strategyAwardEntities) {
+            Integer awardId = entity.getAwardId();
+            Integer awardCount = entity.getAwardCount();
+            cacheAwardCount(strategyId, awardId, awardCount);
+        }
         //进行装配
         strategyArmory(String.valueOf(strategyId), strategyAwardEntities);
         //如果对应的策略id 有权重配置 则需要装配对应的权重奖品
@@ -67,6 +74,12 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
         return strategyRepository.getStrategyRandom(key, new SecureRandom().nextInt(rateRange));
     }
 
+    @Override
+    public Boolean subtractionAwardStock(Long strategyId, Integer awardId) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + "_" + awardId;
+        return strategyRepository.subtractionAwardStock(cacheKey);
+    }
+
     //用于奖品装配的方法
     private void strategyArmory(String key, List<StrategyAwardEntity> strategyAwardEntities) {
         //获取最小的概率值  以及概率总和
@@ -103,5 +116,10 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
 
         //存放到redis中
         strategyRepository.storeStrategyAwardEntityRateTables(key, shuffleSearchTable.size(), shuffleSearchTable);
+    }
+
+    private void cacheAwardCount(Long strategyId, Integer awardId, Integer awardCount) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + "_" + awardId;
+        strategyRepository.cacheAwardCount(cacheKey, awardCount);
     }
 }
