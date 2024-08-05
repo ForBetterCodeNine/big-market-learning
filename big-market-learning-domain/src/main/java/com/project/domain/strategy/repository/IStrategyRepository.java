@@ -17,6 +17,8 @@ public interface IStrategyRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardEntityList(Long strategyId);
 
+    StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Integer awardId);
+
     void storeStrategyAwardEntityRateTables(String key, Integer rateRange, Map<Integer, Integer> map);
 
     Integer getRateRangeByStrategyId(Long strategyId);

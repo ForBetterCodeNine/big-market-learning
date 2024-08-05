@@ -1,11 +1,14 @@
 package com.project.domain.strategy.service.raffle;
 
+import com.project.domain.strategy.model.entity.StrategyAwardEntity;
 import com.project.domain.strategy.model.valobj.RuleTreeVO;
 import com.project.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.project.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import com.project.domain.strategy.repository.IStrategyRepository;
 import com.project.domain.strategy.service.armory.IStrategyDispatch;
 import com.project.domain.strategy.service.rule.AbstractRaffleStrategy;
+import com.project.domain.strategy.service.rule.IRaffleAward;
+import com.project.domain.strategy.service.rule.IRaffleStock;
 import com.project.domain.strategy.service.rule.chain.ILogicChain;
 import com.project.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.project.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
@@ -13,10 +16,12 @@ import com.project.domain.strategy.service.rule.tree.factory.engine.IDecisionTre
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @Slf4j
-public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
+public class DefaultRaffleStrategy extends AbstractRaffleStrategy implements IRaffleStock, IRaffleAward {
 
     public DefaultRaffleStrategy(DefaultChainFactory defaultChainFactory, DefaultTreeFactory defaultTreeFactory, IStrategyDispatch strategyDispatch, IStrategyRepository strategyRepository) {
         super(defaultChainFactory, defaultTreeFactory, strategyDispatch, strategyRepository);
@@ -51,5 +56,10 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
     @Override
     public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
         strategyRepository.updateStrategyAwardStock(strategyId, awardId);
+    }
+
+    @Override
+    public List<StrategyAwardEntity> queryRaffleStrategyAwardList(Long strategyId) {
+        return strategyRepository.queryStrategyAwardEntityList(strategyId);
     }
 }

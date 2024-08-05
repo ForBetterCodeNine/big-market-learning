@@ -13,6 +13,7 @@
         <module>big-market-learning-trigger</module>
         <module>big-market-learning-infrastructure</module>
         <module>big-market-learning-types</module>
+        <module>big-market-api</module>
     </modules>
 
     <repositories>
