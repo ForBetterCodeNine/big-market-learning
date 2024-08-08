@@ -1,4 +1,4 @@
-package com.project.test.infrastructure;
+package com.project.test.strategy.infrastructure;
 
 import com.alibaba.fastjson.JSON;
 import com.project.infrastructure.persistent.dao.IAwardDao;

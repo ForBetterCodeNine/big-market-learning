@@ -1,4 +1,4 @@
-package com.project.test.armoryTest;
+package com.project.test.strategy.armoryTest;
 
 import com.project.domain.strategy.service.armory.IStrategyArmory;
 import com.project.domain.strategy.service.armory.IStrategyDispatch;

@@ -1,4 +1,4 @@
-package com.project.test.dbRouterTest;
+package com.project.test.strategy.dbRouterTest;
 
 import com.alibaba.fastjson2.JSON;
 import com.project.infrastructure.persistent.dao.IRaffleActivityDao;

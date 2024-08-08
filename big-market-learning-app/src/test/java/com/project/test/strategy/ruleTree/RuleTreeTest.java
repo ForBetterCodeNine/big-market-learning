@@ -1,4 +1,4 @@
-package com.project.test.ruleTree;
+package com.project.test.strategy.ruleTree;
 
 import com.alibaba.fastjson2.JSON;
 import com.project.domain.strategy.model.valobj.*;

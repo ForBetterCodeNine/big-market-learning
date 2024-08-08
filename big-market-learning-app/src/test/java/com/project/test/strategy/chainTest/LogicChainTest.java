@@ -1,4 +1,4 @@
-package com.project.test.chainTest;
+package com.project.test.strategy.chainTest;
 
 
 import com.project.domain.strategy.model.entity.RaffleAwardEntity;

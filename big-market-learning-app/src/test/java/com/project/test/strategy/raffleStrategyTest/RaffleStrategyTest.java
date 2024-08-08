@@ -1,4 +1,4 @@
-package com.project.test.raffleStrategyTest;
+package com.project.test.strategy.raffleStrategyTest;
 
 
 import com.alibaba.fastjson.JSON;
