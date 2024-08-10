@@ -1,17 +1,24 @@
-# /usr/local/bin/docker-compose -f /docs/dev-ops/environment/environment-docker-compose-2.4.yml up -d
 version: '3.8'
-# docker-compose -f docker-compose-app.yml up -d
-# 你需要修改system为你自身系统的仓库名
+# 命令执行 docker-compose -f docker-compose-app.yml up -d
 services:
-  big-market-learning:
-    image: system/big-market-learning:1.0-SNAPSHOT
-    container_name: big-market-learning
-    restart: on-failure
+  big-market-app:
+    image: 192u391/big-market-learning-app:1.0-SNAPSHOT
+    container_name: big-market-app
+    restart: always
     ports:
       - "8091:8091"
     environment:
       - TZ=PRC
       - SERVER_PORT=8091
+      - APP_CONFIG_API_VERSION=v1
+      - APP_CONFIG_CROSS_ORIGIN=*
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=231816
+      - SPRING_DATASOURCE_URL=jdbc:mysql://49.234.53.218:13306/big_market?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
+      - REDIS_SDK_CONFIG_HOST=redis
+      - REDIS_SDK_CONFIG_PORT=6379
     volumes:
       - ./log:/data/log
     logging:
@@ -19,3 +26,18 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+  big-market-front-app:
+    container_name: big-market-front-app
+    image: 192u391/big-market-front-app:1.0
+    restart: always
+    ports:
+      - 3000:3000
+    environment:
+      - API_HOST_URL=http://49.234.53.218:8091
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://0.0.0.0:3000/" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+

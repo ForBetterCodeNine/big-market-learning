@@ -1,5 +1,6 @@
 package com.project.domain.activity.repository;
 
+import com.project.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.project.domain.activity.model.entity.ActivityCountEntity;
 import com.project.domain.activity.model.entity.ActivityEntity;
 import com.project.domain.activity.model.entity.ActivitySkuEntity;
@@ -17,4 +18,6 @@ public interface IActivityRepository {
 
     //查询活动数量信息
     ActivityCountEntity queryActivityCountEntityByAccountId(Long activityCountId);
+
+    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
 }
