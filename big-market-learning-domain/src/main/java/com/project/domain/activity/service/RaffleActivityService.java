@@ -2,6 +2,7 @@ package com.project.domain.activity.service;
 
 import com.project.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.project.domain.activity.model.entity.*;
+import com.project.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.project.domain.activity.model.valobj.OrderStateVO;
 import com.project.domain.activity.repository.IActivityRepository;
 import com.project.domain.activity.service.rule.factory.DefaultActivityChainFactory;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class RaffleActivityService extends AbstractActivityService{
+public class RaffleActivityService extends AbstractActivityService implements ISkuStock{
     public RaffleActivityService(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(activityRepository, defaultActivityChainFactory);
     }
@@ -48,5 +49,25 @@ public class RaffleActivityService extends AbstractActivityService{
     @Override
     protected void doSaveOrder(CreateOrderAggregate orderAggregate) {
         activityRepository.doSaveOrder(orderAggregate);
+    }
+
+    @Override
+    public ActivitySkuStockKeyVO takeQueueValue() throws Exception {
+        return activityRepository.takeQueueValue();
+    }
+
+    @Override
+    public void clearQueueValue() {
+        activityRepository.clearQueueValue();
+    }
+
+    @Override
+    public void updateActivitySkuStock(Long sku) {
+        activityRepository.updateActivitySkuStock(sku);
+    }
+
+    @Override
+    public void clearActivitySkuStock(Long sku) {
+        activityRepository.clearActivitySkuStock(sku);
     }
 }

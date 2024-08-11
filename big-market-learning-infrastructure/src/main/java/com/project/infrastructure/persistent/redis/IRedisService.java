@@ -2,6 +2,8 @@ package com.project.infrastructure.persistent.redis;
 
 import org.redisson.api.*;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Redis 服务
  *
@@ -250,5 +252,7 @@ public interface IRedisService {
     void setAtomicLong(String cacheKey, Integer awardCount);
 
     boolean setNx(String lockKey);
+
+    boolean setNx(String lockKey, Long expireTime, TimeUnit unit);
 
 }

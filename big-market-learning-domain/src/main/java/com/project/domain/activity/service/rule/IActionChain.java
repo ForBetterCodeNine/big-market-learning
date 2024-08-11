@@ -8,5 +8,5 @@ import com.project.domain.activity.model.entity.ActivitySkuEntity;
  * 下单规则过滤接口 责任链模式
  */
 public interface IActionChain extends IActionArmoryChain {
-    boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activity, ActivityCountEntity activityCountEntity);
+    boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
 }
