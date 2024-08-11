@@ -1,4 +1,4 @@
-package com.project.domain.activity.service;
+package com.project.domain.activity.service.quota;
 
 import com.project.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.project.domain.activity.model.entity.ActivityCountEntity;
@@ -6,8 +6,9 @@ import com.project.domain.activity.model.entity.ActivityEntity;
 import com.project.domain.activity.model.entity.ActivitySkuEntity;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
 import com.project.domain.activity.repository.IActivityRepository;
-import com.project.domain.activity.service.rule.IActionChain;
-import com.project.domain.activity.service.rule.factory.DefaultActivityChainFactory;
+import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
+import com.project.domain.activity.service.quota.rule.IActionChain;
+import com.project.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import com.project.types.enums.ResponseCode;
 import com.project.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +18,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
-public abstract class AbstractActivityService extends RaffleActivitySupport implements IRaffleOrder{
+public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityAccountQuotaSupport implements IRaffleActivityAccountQuotaService {
 
    // protected IActivityRepository activityRepository;
 
-    public AbstractActivityService(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(activityRepository, defaultActivityChainFactory);
     }
 

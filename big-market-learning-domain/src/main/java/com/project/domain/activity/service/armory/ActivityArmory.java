@@ -18,7 +18,7 @@ public class ActivityArmory implements IActivityArmory, IActivityDispatch {
     public boolean assembleActivitySku(Long sku) {
         //预热活动sku库存
         ActivitySkuEntity activitySkuEntity = activityRepository.queryActivitySkuEntity(sku);
-        cacheActivitySkuStockCount(sku, activitySkuEntity.getStockCount());
+        cacheActivitySkuStockCount(sku, activitySkuEntity.getStockCountSurplus());
 
         activityRepository.queryRaffleActivityEntityByAcId(activitySkuEntity.getActivityId());
         activityRepository.queryActivityCountEntityByAccountId(activitySkuEntity.getActivityCountId());

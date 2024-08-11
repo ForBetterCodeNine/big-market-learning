@@ -1,4 +1,4 @@
-package com.project.domain.activity.service.rule;
+package com.project.domain.activity.service.quota.rule;
 
 public interface IActionArmoryChain {
     IActionChain next();

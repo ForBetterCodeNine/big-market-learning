@@ -1,7 +1,7 @@
 package com.project.test.activity;
 
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
-import com.project.domain.activity.service.IRaffleOrder;
+import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.project.domain.activity.service.armory.IActivityArmory;
 import com.project.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 @SpringBootTest
 public class RaffleOrderTest {
     @Resource
-    private IRaffleOrder raffleOrder;
+    private IRaffleActivityAccountQuotaService raffleOrder;
 
     //@Test
     //public void test_createRaffleActivityOrder() {

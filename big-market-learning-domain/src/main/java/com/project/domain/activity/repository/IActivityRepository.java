@@ -1,9 +1,8 @@
 package com.project.domain.activity.repository;
 
 import com.project.domain.activity.model.aggregate.CreateOrderAggregate;
-import com.project.domain.activity.model.entity.ActivityCountEntity;
-import com.project.domain.activity.model.entity.ActivityEntity;
-import com.project.domain.activity.model.entity.ActivitySkuEntity;
+import com.project.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
+import com.project.domain.activity.model.entity.*;
 import com.project.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 
 import java.util.Date;
@@ -37,4 +36,29 @@ public interface IActivityRepository {
     void updateActivitySkuStock(Long sku);
 
     void clearActivitySkuStock(Long sku);
+
+    /**
+     * 查询用户未使用的订单
+     */
+    UserRaffleOrderEntity queryNoUsedRaffleOrder(PartakeRaffleActivityEntity partakeRaffleActivityEntity);
+
+    /**
+     * 查询用户参与额度
+     */
+    ActivityAccountEntity queryActivityAccountByUserIdAndAcId(String userId, Long activityId);
+
+    /**
+     * 查询用户月额度
+     */
+    ActivityAccountMonthEntity queryActivityAccountMonth(String userId, Long activityId, String month);
+
+    /**
+     * 查询用户当天额度
+     */
+    ActivityAccountDayEntity queryActivityAccountDay(String userId, Long activityId, String day);
+
+    /**
+     * 保存订单聚合对象
+     */
+    void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate partakeOrderAggregate);
 }

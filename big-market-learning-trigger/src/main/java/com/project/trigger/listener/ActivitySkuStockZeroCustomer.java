@@ -2,7 +2,7 @@ package com.project.trigger.listener;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.TypeReference;
-import com.project.domain.activity.service.ISkuStock;
+import com.project.domain.activity.service.IRaffleActivitySkuStockService;
 import com.project.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class ActivitySkuStockZeroCustomer {
 
     @Resource
-    private ISkuStock skuStock;
+    private IRaffleActivitySkuStockService skuStock;
 
 
     @KafkaListener(topics = "big-market-activity-sku-stock-consistent", groupId = "big-market-activity-group", concurrency = "1")

@@ -1,4 +1,4 @@
-package com.project.domain.activity.service.rule;
+package com.project.domain.activity.service.quota.rule;
 
 import com.project.domain.activity.model.entity.ActivityCountEntity;
 import com.project.domain.activity.model.entity.ActivityEntity;
