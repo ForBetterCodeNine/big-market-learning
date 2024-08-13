@@ -255,4 +255,5 @@ public interface IRedisService {
 
     boolean setNx(String lockKey, Long expireTime, TimeUnit unit);
 
+    Long getAtomicLong(String cacheKey);
 }

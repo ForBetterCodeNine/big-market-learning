@@ -88,6 +88,12 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
         return strategyRepository.subtractionAwardStock(cacheKey);
     }
 
+    @Override
+    public Boolean subtractionAwardStock(Long strategyId, Integer awardId, Date endDateTime) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + "_" + awardId;
+        return strategyRepository.subtractionAwardStock(cacheKey, endDateTime);
+    }
+
     //用于奖品装配的方法
     private void strategyArmory(String key, List<StrategyAwardEntity> strategyAwardEntities) {
         //获取最小的概率值  以及概率总和
@@ -101,7 +107,7 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         //获取范围值
-        BigDecimal rateRange = sumAwardRate.divide(minAwardRate, 0, RoundingMode.CEILING);
+        BigDecimal rateRange = BigDecimal.valueOf(convert(minAwardRate.doubleValue()));
 
         //生成对应的概率查找表
         List<Integer> strategyAwardSearchRateTables = new ArrayList<>(rateRange.intValue());
@@ -129,5 +135,18 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
     private void cacheAwardCount(Long strategyId, Integer awardId, Integer awardCount) {
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + "_" + awardId;
         strategyRepository.cacheAwardCount(cacheKey, awardCount);
+    }
+
+
+    private double convert(double min) {
+        if (0 == min) return 1D;
+
+        double current = min;
+        double max = 1;
+        while (current < 1) {
+            current = current * 10;
+            max = max * 10;
+        }
+        return max;
     }
 }

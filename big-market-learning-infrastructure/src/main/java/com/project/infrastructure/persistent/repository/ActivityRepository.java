@@ -76,6 +76,11 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public ActivitySkuEntity queryActivitySkuEntity(Long sku) {
         RaffleActivitySku raffleActivitySku = raffleActivitySkuDao.queryActivitySku(sku);
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY + sku;
+        Long cacheSkuStock = redisService.getAtomicLong(cacheKey);
+        if (null == cacheSkuStock || 0 == cacheSkuStock) {
+            cacheSkuStock = 0L;
+        }
         return ActivitySkuEntity.builder()
                 .activityCountId(raffleActivitySku.getActivityCountId())
                 .sku(raffleActivitySku.getSku())
@@ -432,6 +437,16 @@ public class ActivityRepository implements IActivityRepository {
     public List<ActivitySkuEntity> queryActivitySkuListByActivityId(Long activityId) {
         raffleActivitySkuDao.queryActivitySkuListByActivityId(activityId);
         return Collections.emptyList();
+    }
+
+    @Override
+    public Integer queryRaffleActivityDayPartakeCount(Long activityId, String userId) {
+        RaffleActivityAccountDay raffleActivityAccountDay = new RaffleActivityAccountDay();
+        raffleActivityAccountDay.setActivityId(activityId);
+        raffleActivityAccountDay.setUserId(userId);
+        raffleActivityAccountDay.setDay(raffleActivityAccountDay.currentDay());
+        Integer dayPartakeCount = raffleActivityAccountDayDao.queryRaffleActivityDayPartakeCount(raffleActivityAccountDay);
+        return dayPartakeCount == null ? 0 : dayPartakeCount;
     }
 
 

@@ -94,6 +94,7 @@ public class RaffleActivityController implements IRaffleActivityService {
             RaffleAwardEntity awardEntity = raffleStrategy.performRaffle(RaffleFactorEntity.builder()
                     .userId(userId)
                     .strategyId(orderEntity.getStrategyId())
+                    .endDateTime(orderEntity.getEndDateTime())
                     .build());
 
             //存放结果 保存到UserAwardRecord表中

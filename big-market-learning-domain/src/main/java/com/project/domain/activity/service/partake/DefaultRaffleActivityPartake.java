@@ -95,7 +95,7 @@ public class DefaultRaffleActivityPartake extends AbstractRaffleActivityPartake{
         entity.setOrderTime(date);
         entity.setOrderState(UserRaffleOrderStateVO.create);
         entity.setStrategyId(activityEntity.getStrategyId());
-
+        entity.setEndDateTime(activityEntity.getEndDateTime());
         return entity;
     }
 }

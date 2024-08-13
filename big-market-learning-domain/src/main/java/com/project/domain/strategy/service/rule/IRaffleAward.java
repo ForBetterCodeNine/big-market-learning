@@ -10,4 +10,10 @@ import java.util.List;
 public interface IRaffleAward {
     //根据策略id查询奖品集合
     List<StrategyAwardEntity> queryRaffleStrategyAwardList(Long strategyId);
+
+    /**
+     * 根据活动ID查询抽奖奖品列表配置
+     *
+     */
+    List<StrategyAwardEntity> queryRaffleStrategyAwardListByActivityId(Long activityId);
 }

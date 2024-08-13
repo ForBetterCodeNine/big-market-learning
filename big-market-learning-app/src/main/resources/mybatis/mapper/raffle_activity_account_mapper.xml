@@ -48,13 +48,13 @@
 
     <update id="updateActivityAccountMonthSurplusImageQuota" parameterType="com.project.infrastructure.persistent.po.RaffleActivityAccount">
         update raffle_activity_account
-        set month_count_surplus = #{monthCountSurplus} - 1, update_time = now()
+        set month_count_surplus = #{monthCountSurplus}, update_time = now()
         where user_id = #{userId} and activity_id = #{activityId}
     </update>
 
     <update id="updateActivityAccountDaySurplusImageQuota" parameterType="com.project.infrastructure.persistent.po.RaffleActivityAccount">
         update raffle_activity_account
-        set day_count_surplus = #{dayCountSurplus} - 1, update_time = now()
+        set day_count_surplus = #{dayCountSurplus}, update_time = now()
         where user_id = #{userId} and activity_id = #{activityId}
     </update>
 

@@ -2,4 +2,4 @@ spring:
   config:
     name: big-market-learning-app
   profiles:
-    active: prod
+    active: dev
