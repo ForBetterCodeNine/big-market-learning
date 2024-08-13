@@ -120,7 +120,18 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
-
+spring:
+  kafka:
+    bootstrap-servers: 49.234.53.218:9092
+    producer:
+      retries: 1
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+    listener:
+      ack-mode: MANUAL
 # 日志
 logging:
   level:
