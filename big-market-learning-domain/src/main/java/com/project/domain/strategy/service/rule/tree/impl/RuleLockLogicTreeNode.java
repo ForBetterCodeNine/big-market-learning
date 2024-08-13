@@ -1,10 +1,13 @@
 package com.project.domain.strategy.service.rule.tree.impl;
 
 import com.project.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.project.domain.strategy.repository.IStrategyRepository;
 import com.project.domain.strategy.service.rule.tree.ILogicTreeNode;
 import com.project.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * 次数锁节点
@@ -13,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Component("rule_lock")
 public class RuleLockLogicTreeNode implements ILogicTreeNode {
 
-    //用户抽奖次数
-    private Long userRaffleCount = 10L;
+    @Resource
+    private IStrategyRepository strategyRepository;
 
 
     @Override
@@ -27,12 +30,14 @@ public class RuleLockLogicTreeNode implements ILogicTreeNode {
         }catch (Exception e) {
             throw new RuntimeException("规则过滤-次数锁异常 ruleValue: " + ruleValue + " 配置不正确");
         }
-
+        int userRaffleCount = strategyRepository.queryTodayUserRaffleCount(userId, strategyId);
         if(userRaffleCount >= raffleCount) {
+            log.info("规则过滤-次数锁【放行】 userId:{} strategyId:{} awardId:{} raffleCount:{} userRaffleCount:{}", userId, strategyId, awardId, userRaffleCount, userRaffleCount);
             return DefaultTreeFactory.TreeActionEntity.builder()
                     .ruleLogicCheckTypeVO(RuleLogicCheckTypeVO.ALLOW)
                     .build();
         }
+        log.info("规则过滤-次数锁【拦截】 userId:{} strategyId:{} awardId:{} raffleCount:{} userRaffleCount:{}", userId, strategyId, awardId, userRaffleCount, userRaffleCount);
         return DefaultTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckTypeVO(RuleLogicCheckTypeVO.TAKE_OVER)
                 .build();

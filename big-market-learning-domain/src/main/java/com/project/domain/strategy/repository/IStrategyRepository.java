@@ -50,4 +50,10 @@ public interface IStrategyRepository {
 
     void updateStrategyAwardStock(Long strategyId, Integer awardId);
 
+    Long queryStrategyByActivityId(Long activityId);
+
+    /**
+     * 查询用户抽奖次数
+     */
+    Integer queryTodayUserRaffleCount(String userId, Long strategyId);
 }

@@ -28,6 +28,9 @@ import java.util.concurrent.TimeUnit;
 public class StrategyRepository implements IStrategyRepository {
 
     @Resource
+    private IRaffleActivityDao raffleActivityDao;
+
+    @Resource
     private IStrategyAwardDao strategyAwardDao;
 
     @Resource
@@ -38,6 +41,9 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Resource
     private IStrategyRuleDao strategyRuleDao;
+
+    @Resource
+    private IRaffleActivityAccountDayDao activityAccountDayDao;
 
     @Resource
     private IRuleTreeDao ruleTreeDao;
@@ -277,5 +283,23 @@ public class StrategyRepository implements IStrategyRepository {
         strategyAward.setAwardId(awardId);
         strategyAward.setStrategyId(strategyId);
         strategyAwardDao.updateStrategyAwardStock(strategyAward);
+    }
+
+    @Override
+    public Long queryStrategyByActivityId(Long activityId) {
+        return raffleActivityDao.queryStrategyByActivityId(activityId);
+    }
+
+    @Override
+    public Integer queryTodayUserRaffleCount(String userId, Long strategyId) {
+        Long activityId = raffleActivityDao.queryActivityIdByStrategyId(strategyId);
+        RaffleActivityAccountDay raffleActivityAccountDayReq = new RaffleActivityAccountDay();
+        raffleActivityAccountDayReq.setUserId(userId);
+        raffleActivityAccountDayReq.setActivityId(activityId);
+        raffleActivityAccountDayReq.setDay(raffleActivityAccountDayReq.currentDay());
+        RaffleActivityAccountDay res = activityAccountDayDao.queryActivityAccountDay(raffleActivityAccountDayReq);
+        if(null == res) return 0;
+        // 总次数 - 剩余的，等于今日参与的
+        return res.getDayCount() - res.getDayCountSurplus();
     }
 }

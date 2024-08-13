@@ -60,6 +60,12 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
     }
 
     @Override
+    public boolean assembleLotteryStrategyByActivity(Long activityId) {
+        Long strategyId = strategyRepository.queryStrategyByActivityId(activityId);
+        return strategyArmory(strategyId);
+    }
+
+    @Override
     public Integer getRandomAwardId(Long strategyId) {
         //首先需要拿到范围值
         int rateRange = strategyRepository.getRateRangeByStrategyId(strategyId);

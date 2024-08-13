@@ -9,8 +9,10 @@ import com.project.domain.award.repository.IAwardRepository;
 import com.project.infrastructure.event.EventPublisher;
 import com.project.infrastructure.persistent.dao.ITaskDao;
 import com.project.infrastructure.persistent.dao.IUserAwardRecordDao;
+import com.project.infrastructure.persistent.dao.IUserRaffleOrderDao;
 import com.project.infrastructure.persistent.po.Task;
 import com.project.infrastructure.persistent.po.UserAwardRecord;
+import com.project.infrastructure.persistent.po.UserRaffleOrder;
 import com.project.types.enums.ResponseCode;
 import com.project.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,9 @@ public class AwardRepository implements IAwardRepository {
 
     @Resource
     private ITaskDao taskDao;
+
+    @Resource
+    private IUserRaffleOrderDao userRaffleOrderDao;
 
     @Resource
     private EventPublisher eventPublisher;
@@ -65,12 +70,23 @@ public class AwardRepository implements IAwardRepository {
         task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
+        UserRaffleOrder userRaffleOrderReq = new UserRaffleOrder();
+        userRaffleOrderReq.setUserId(userId);
+        userRaffleOrderReq.setOrderId(userAwardRecordEntity.getOrderId());
+
         try {
             dbRouter.doRouter(userId);
             transactionTemplate.execute(status ->{
                 try {
                     userAwardRecordDao.insert(userAwardRecord);
                     taskDao.insert(task);
+                    //更新抽奖单
+                    int count = userRaffleOrderDao.updateUserRaffleOrderStateUsed(userRaffleOrderReq);
+                    if(count != 1) {
+                        status.setRollbackOnly();
+                        log.error("写入中奖记录，用户抽奖单已使用过，不可重复抽奖 userId: {} activityId: {} awardId: {}", userId, activityId, awardId);
+                        throw new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getInfo());
+                    }
                     return 1;
                 }catch (DuplicateKeyException e) {
                     status.setRollbackOnly();

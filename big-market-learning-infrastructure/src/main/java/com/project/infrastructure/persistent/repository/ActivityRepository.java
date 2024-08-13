@@ -24,7 +24,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -425,4 +427,12 @@ public class ActivityRepository implements IActivityRepository {
             dbRouter.clear();
         }
     }
+
+    @Override
+    public List<ActivitySkuEntity> queryActivitySkuListByActivityId(Long activityId) {
+        raffleActivitySkuDao.queryActivitySkuListByActivityId(activityId);
+        return Collections.emptyList();
+    }
+
+
 }

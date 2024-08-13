@@ -8,4 +8,5 @@ public interface IStrategyArmory {
     boolean strategyArmory(Long strategyId);
 
 
+    boolean assembleLotteryStrategyByActivity(Long activityId);
 }

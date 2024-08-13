@@ -56,6 +56,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         RaffleAwardEntity awardEntity = new RaffleAwardEntity();
         awardEntity.setAwardId(awardId);
         awardEntity.setSort(strategyAwardEntity.getSort());
+        awardEntity.setAwardTitle(strategyAwardEntity.getAwardTitle());
         awardEntity.setAwardConfig(config);
         return awardEntity;
     }

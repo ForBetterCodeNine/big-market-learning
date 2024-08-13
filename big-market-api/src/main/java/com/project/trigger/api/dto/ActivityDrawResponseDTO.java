@@ -6,17 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 抽奖应答结果
+ * 各个领域调用之后的返回奖品对象
  */
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaffleResponseDTO {
-
+public class ActivityDrawResponseDTO {
     private Integer awardId;
 
-    //奖品编号
+    private String awardTitle;
+
     private Integer awardIndex;
+
 }

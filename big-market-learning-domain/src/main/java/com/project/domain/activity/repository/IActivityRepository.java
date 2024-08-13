@@ -6,6 +6,7 @@ import com.project.domain.activity.model.entity.*;
 import com.project.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 活动仓储接口
@@ -61,4 +62,8 @@ public interface IActivityRepository {
      * 保存订单聚合对象
      */
     void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate partakeOrderAggregate);
+
+    List<ActivitySkuEntity> queryActivitySkuListByActivityId(Long activityId);
+
+
 }

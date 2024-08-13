@@ -6,7 +6,7 @@ import lombok.Data;
  * 抽奖请求参数
  */
 @Data
-public class RaffleRequestDTO {
+public class RaffleStrategyRequestDTO {
 
     private Long strategyId;
 }
