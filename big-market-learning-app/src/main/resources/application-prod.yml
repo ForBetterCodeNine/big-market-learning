@@ -14,10 +14,6 @@ app:
     # 跨域，开发阶段可以设置为 * 不限制
     cross-origin: '*'
 
-
-
-
-
 # 线程池配置
 thread:
   pool:
@@ -120,6 +116,7 @@ redis:
       retry-interval: 1000
       ping-interval: 60000
       keep-alive: true
+
 spring:
   kafka:
     bootstrap-servers: 49.234.53.218:9092
@@ -132,6 +129,7 @@ spring:
       acks: 1
     listener:
       ack-mode: MANUAL
+
 # 日志
 logging:
   level:
