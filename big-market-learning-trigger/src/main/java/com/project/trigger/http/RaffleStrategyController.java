@@ -120,7 +120,7 @@ public class RaffleStrategyController implements IRaffleStrategyService {
             log.info("随机抽奖开始 strategyId: {}", requestDTO.getStrategyId());
             RaffleFactorEntity entity = new RaffleFactorEntity();
             entity.setStrategyId(requestDTO.getStrategyId());
-            entity.setUserId("zhoujielun");
+            entity.setUserId("xiaofuge");
             RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(entity);
             Response<RaffleStrategyResponseDTO> response = Response.<RaffleStrategyResponseDTO>builder()
                     .code(ResponseCode.SUCCESS.getCode())
