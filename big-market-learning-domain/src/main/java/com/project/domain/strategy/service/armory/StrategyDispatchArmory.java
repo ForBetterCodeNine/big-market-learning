@@ -23,6 +23,8 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
     @Resource
     private IStrategyRepository strategyRepository;
 
+    private final SecureRandom secureRandom = new SecureRandom();
+
 
     @Override
     public boolean strategyArmory(Long strategyId) {
@@ -69,7 +71,7 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
     public Integer getRandomAwardId(Long strategyId) {
         //首先需要拿到范围值
         int rateRange = strategyRepository.getRateRangeByStrategyId(strategyId);
-        return strategyRepository.getStrategyRandom(String.valueOf(strategyId), new SecureRandom().nextInt(rateRange));
+        return strategyRepository.getStrategyRandom(String.valueOf(strategyId), secureRandom.nextInt(rateRange));
     }
 
     @Override
@@ -77,7 +79,7 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
         String key = String.valueOf(strategyId).concat("_").concat(ruleValue);
         // 分布式部署下，不一定为当前应用做的策略装配。也就是值不一定会保存到本应用，而是分布式应用，所以需要从 Redis 中获取。
         int rateRange = strategyRepository.getRateRangeByStrategyId(key);
-        return strategyRepository.getStrategyRandom(key, new SecureRandom().nextInt(rateRange));
+        return strategyRepository.getStrategyRandom(key, secureRandom.nextInt(rateRange));
     }
 
     @Override
