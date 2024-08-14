@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.TypeReference;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
 import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.project.domain.rebate.event.SendRebateMessageEvent;
-import com.project.domain.rebate.model.entity.BehaviorRebateOrderEntity;
 import com.project.domain.rebate.model.valobj.RebateTypeVO;
 import com.project.domain.rebate.service.IBehaviorRebateService;
 import com.project.types.enums.ResponseCode;
@@ -49,15 +48,15 @@ public class RebateMessageCustomer {
             }
             String bizId = rebateMessage.getBizId();
             //判断是否有
-            BehaviorRebateOrderEntity behaviorRebateOrderEntity =  rebateService.selectRebateByBizId(bizId);
-            if(behaviorRebateOrderEntity == null) {
+            //BehaviorRebateOrderEntity behaviorRebateOrderEntity =  rebateService.selectRebateByBizId(bizId);
+            //if(behaviorRebateOrderEntity == null) {
                 //入账
                 SkuRechargeOrderEntity skuRechargeOrderEntity = new SkuRechargeOrderEntity();
                 skuRechargeOrderEntity.setUserId(rebateMessage.getUserId());
                 skuRechargeOrderEntity.setOutBusinessNo(rebateMessage.getBizId());
                 skuRechargeOrderEntity.setSku(Long.valueOf(rebateMessage.getRebateConfig()));
                 raffleActivityAccountQuotaService.createSkuRechargeOrder(skuRechargeOrderEntity);
-            }
+            //}
 
             ack.acknowledge();
         }catch (AppException e) {
