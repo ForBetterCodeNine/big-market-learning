@@ -120,4 +120,16 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
             }
         }
     }
+
+    @Override
+    public BehaviorRebateOrderEntity selectRebateByBizId(String bizId) {
+        UserBehaviorRebateOrder userBehaviorRebateOrder = userBehaviorRebateOrderDao.selectRebateByBizId(bizId);
+        BehaviorRebateOrderEntity orderEntity = new BehaviorRebateOrderEntity();
+        orderEntity.setOrderId(userBehaviorRebateOrder.getOrderId());
+        orderEntity.setUserId(userBehaviorRebateOrder.getUserId());
+        orderEntity.setBehaviorType(userBehaviorRebateOrder.getBehaviorType());
+        orderEntity.setRebateDesc(userBehaviorRebateOrder.getRebateDesc());
+        orderEntity.setRebateConfig(userBehaviorRebateOrder.getRebateConfig());
+        return orderEntity;
+    }
 }

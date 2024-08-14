@@ -17,4 +17,9 @@ public interface IRaffleActivityService {
      * 活动抽奖接口
      */
     Response<ActivityDrawResponseDTO> draw(ActivityDrawRequestDTO requestDTO);
+
+    /**
+     * 用户签到返利接口
+     */
+    Response<Boolean> calendarSignRebate(String userId);
 }

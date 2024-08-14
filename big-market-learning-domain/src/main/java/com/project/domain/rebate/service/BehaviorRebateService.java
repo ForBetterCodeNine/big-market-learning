@@ -74,4 +74,9 @@ public class BehaviorRebateService implements IBehaviorRebateService{
         behaviorRebateRepository.saveUserRebateRecord(behaviorEntity.getUserId(), behaviorRebateAggregates);
         return orderIds;
     }
+
+    @Override
+    public BehaviorRebateOrderEntity selectRebateByBizId(String bizId) {
+        return behaviorRebateRepository.selectRebateByBizId(bizId);
+    }
 }
