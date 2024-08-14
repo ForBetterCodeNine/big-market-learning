@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -115,7 +114,7 @@ public class StrategyDispatchArmory implements IStrategyArmory, IStrategyDispatc
             Integer awardId = strategyAwardEntity.getAwardId();
             BigDecimal awardRate = strategyAwardEntity.getAwardRate();
             //计算转换之后的奖品个数 并填充
-            for(int i=0;i<rateRange.multiply(awardRate).setScale(0, RoundingMode.CEILING).intValue();i++) {
+            for(int i=0;i<rateRange.multiply(awardRate).intValue();i++) {
                 strategyAwardSearchRateTables.add(awardId);
             }
         }

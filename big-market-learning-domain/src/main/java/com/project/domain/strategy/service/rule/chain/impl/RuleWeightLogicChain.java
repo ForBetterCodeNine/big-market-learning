@@ -38,7 +38,10 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         log.info("抽奖责任链-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
         String ruleValue = repository.queryStrategyRuleValue(strategyId, null, ruleModel());
         Map<Long, String> ruleValueMap = getAnalyticalValue(ruleValue);
-        if(ruleValueMap == null || ruleValueMap.isEmpty()) return null;
+        if(ruleValueMap == null || ruleValueMap.isEmpty()) {
+            log.warn("抽奖责任链-权重告警【策略配置权重，但ruleValue未配置相应值】 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
+            return next().doLogic(strategyId, userId);
+        }
 
         List<Long> keys = new ArrayList<>(ruleValueMap.keySet());
         Collections.sort(keys);
