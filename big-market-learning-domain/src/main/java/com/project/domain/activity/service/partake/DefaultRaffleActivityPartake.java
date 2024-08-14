@@ -58,7 +58,7 @@ public class DefaultRaffleActivityPartake extends AbstractRaffleActivityPartake{
             activityAccountMonthEntity.setActivityId(activityId);
             activityAccountMonthEntity.setMonth(month);
             activityAccountMonthEntity.setMonthCount(activityAccountEntity.getMonthCount());
-            activityAccountMonthEntity.setMonthCountSurplus(activityAccountEntity.getMonthCountSurplus());
+            activityAccountMonthEntity.setMonthCountSurplus(activityAccountEntity.getMonthCount());
         }
         partakeOrderAggregate.setExistAccountMonth(isExistAccountMonth);
         partakeOrderAggregate.setActivityAccountMonthEntity(activityAccountMonthEntity);
@@ -76,7 +76,7 @@ public class DefaultRaffleActivityPartake extends AbstractRaffleActivityPartake{
             activityAccountDayEntity.setActivityId(activityId);
             activityAccountDayEntity.setDay(day);
             activityAccountDayEntity.setDayCount(activityAccountEntity.getDayCount());
-            activityAccountDayEntity.setDayCountSurplus(activityAccountEntity.getDayCountSurplus());
+            activityAccountDayEntity.setDayCountSurplus(activityAccountEntity.getDayCount());
         }
         partakeOrderAggregate.setExistAccountDay(isExistAccountDay);
         partakeOrderAggregate.setActivityAccountDayEntity(activityAccountDayEntity);
