@@ -1,8 +1,11 @@
 package com.project.test.award;
 
+import com.project.domain.award.model.entity.DistributeAwardEntity;
 import com.project.domain.award.model.entity.UserAwardRecordEntity;
 import com.project.domain.award.model.valobj.AwardStateVO;
 import com.project.domain.award.service.IAwardService;
+import com.project.infrastructure.persistent.dao.IAwardDao;
+import com.project.infrastructure.persistent.dao.IUserAwardRecordDao;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -21,6 +24,12 @@ public class AwardServiceTest {
 
     @Resource
     private IAwardService awardService;
+
+    @Resource
+    private IAwardDao awardDao;
+
+    @Resource
+    private IUserAwardRecordDao userAwardRecordDao;
 
     /**
      * 模拟发放抽奖记录，流程中会发送MQ，以及接收MQ消息，还有 task 表，补偿发送MQ
@@ -42,5 +51,20 @@ public class AwardServiceTest {
         }
 
         new CountDownLatch(1).await();
+    }
+
+    @Test
+    public void test_distributeAward() throws InterruptedException {
+        DistributeAwardEntity distributeAwardEntity = new DistributeAwardEntity();
+        distributeAwardEntity.setUserId("chenjian");
+        distributeAwardEntity.setOrderId("690124733440");
+        distributeAwardEntity.setAwardId(101);
+        distributeAwardEntity.setAwardConfig("0.01,1"); // 0.01,1 黑名单指定积分值
+
+        //UserAwardRecord userAwardRecord = new UserAwardRecord();
+        //userAwardRecord.setUserId("chenjian");
+        //userAwardRecord.setOrderId("690124733440");
+        //log.info( "{}",userAwardRecordDao.queryAwardRecord(userAwardRecord));
+        awardService.distributeAward(distributeAwardEntity);
     }
 }
