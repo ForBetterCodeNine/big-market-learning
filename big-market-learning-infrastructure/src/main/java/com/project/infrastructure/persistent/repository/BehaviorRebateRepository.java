@@ -49,7 +49,6 @@ public class BehaviorRebateRepository implements IBehaviorRebateRepository {
     private EventPublisher eventPublisher;
 
 
-
     @Override
     public List<DailyBehaviorRebateVO> queryDailyBehaviorRebateConfigs(BehaviorTypeVO behaviorTypeVO) {
         List<DailyBehaviorRebate> dailyBehaviorRebateList = dailyBehaviorRebateDao.queryDailyBehaviorRebateByBehaviorType(behaviorTypeVO.getCode());

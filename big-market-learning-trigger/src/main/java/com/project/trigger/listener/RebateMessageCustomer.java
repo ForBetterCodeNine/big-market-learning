@@ -4,8 +4,11 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
 import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
+import com.project.domain.credit.model.entity.TradeEntity;
+import com.project.domain.credit.model.valobj.TradeNameVO;
+import com.project.domain.credit.model.valobj.TradeTypeVO;
+import com.project.domain.credit.service.ICreditAdjustService;
 import com.project.domain.rebate.event.SendRebateMessageEvent;
-import com.project.domain.rebate.model.valobj.RebateTypeVO;
 import com.project.domain.rebate.service.IBehaviorRebateService;
 import com.project.types.enums.ResponseCode;
 import com.project.types.event.BaseEvent;
@@ -19,6 +22,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Slf4j
@@ -31,6 +35,8 @@ public class RebateMessageCustomer {
     @Resource
     private IBehaviorRebateService rebateService;
 
+    @Resource
+    private ICreditAdjustService creditAdjustService;
 
     @KafkaListener(topics = "big-market-daily-rebate-topic", groupId = "big-market-daily-rebate-group", concurrency = "1")
     public void rebate_listener(ConsumerRecord<?,?> record, Acknowledgment ack, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
@@ -42,21 +48,26 @@ public class RebateMessageCustomer {
                     message,new TypeReference<BaseEvent.EventMessage<SendRebateMessageEvent.RebateMessage>>(){}.getType()
             );
             SendRebateMessageEvent.RebateMessage rebateMessage = eventMessage.getData();
-            if(!RebateTypeVO.SKU.getCode().equals(rebateMessage.getRebateType())) {
-                log.info("监听用户行为返利消息 - 非sku奖励暂时不处理 topic: {} message: {}", topic, message);
-                return;
+            switch (rebateMessage.getRebateType()) {
+                case "sku":
+                    SkuRechargeOrderEntity skuRechargeOrderEntity = new SkuRechargeOrderEntity();
+                    skuRechargeOrderEntity.setUserId(rebateMessage.getUserId());
+                    skuRechargeOrderEntity.setOutBusinessNo(rebateMessage.getBizId());
+                    skuRechargeOrderEntity.setSku(Long.valueOf(rebateMessage.getRebateConfig()));
+                    raffleActivityAccountQuotaService.createSkuRechargeOrder(skuRechargeOrderEntity);
+                    break;
+                case "integral":
+                    TradeEntity tradeEntity = new TradeEntity();
+                    tradeEntity.setUserId(rebateMessage.getUserId());
+                    tradeEntity.setTradeName(TradeNameVO.REBATE);
+                    tradeEntity.setTradeType(TradeTypeVO.FORWARD);
+                    tradeEntity.setAmount(new BigDecimal(rebateMessage.getRebateConfig()));
+                    tradeEntity.setOutBusinessNo(rebateMessage.getBizId());
+                    creditAdjustService.createOrder(tradeEntity);
+                    break;
             }
-            String bizId = rebateMessage.getBizId();
-            //判断是否有
-            //BehaviorRebateOrderEntity behaviorRebateOrderEntity =  rebateService.selectRebateByBizId(bizId);
-            //if(behaviorRebateOrderEntity == null) {
-                //入账
-                SkuRechargeOrderEntity skuRechargeOrderEntity = new SkuRechargeOrderEntity();
-                skuRechargeOrderEntity.setUserId(rebateMessage.getUserId());
-                skuRechargeOrderEntity.setOutBusinessNo(rebateMessage.getBizId());
-                skuRechargeOrderEntity.setSku(Long.valueOf(rebateMessage.getRebateConfig()));
-                raffleActivityAccountQuotaService.createSkuRechargeOrder(skuRechargeOrderEntity);
-            //}
+
+
 
             ack.acknowledge();
         }catch (AppException e) {

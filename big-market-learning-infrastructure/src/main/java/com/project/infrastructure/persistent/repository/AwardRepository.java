@@ -146,9 +146,11 @@ public class AwardRepository implements IAwardRepository {
             transactionTemplate.execute(status -> {
                 try {
                     //更新积分 创建积分账户
-                    int updateAccountCount = userCreditAccountDao.updateAddAmount(userCreditAccountReq);
-                    if(updateAccountCount == 0) {
+                    UserCreditAccount userCreditAccount = userCreditAccountDao.queryUserCreditAccount(userCreditAccountReq);
+                    if(userCreditAccount == null) {
                         userCreditAccountDao.insert(userCreditAccountReq);
+                    }else {
+                        userCreditAccountDao.updateAddAmount(userCreditAccountReq);
                     }
                     //更新奖品记录
                     int updateAwardCount = userAwardRecordDao.updateAwardRecordCompletedState(userAwardRecordReq);

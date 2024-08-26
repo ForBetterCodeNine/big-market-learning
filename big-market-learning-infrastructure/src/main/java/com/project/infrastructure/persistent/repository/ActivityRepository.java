@@ -182,10 +182,11 @@ public class ActivityRepository implements IActivityRepository {
                 try {
                     //写入订单
                     raffleActivityOrderDao.insert(raffleActivityOrder);
-                    //更新账户
-                    int count = raffleActivityAccountDao.updateAccountQuota(raffleActivityAccount);
-                    if(count == 0) {
+                    RaffleActivityAccount account = raffleActivityAccountDao.queryAccountByUserId(raffleActivityAccount);
+                    if(account == null) {
                         raffleActivityAccountDao.insert(raffleActivityAccount);
+                    }else {
+                        raffleActivityAccountDao.updateAccountQuota(raffleActivityAccount);
                     }
                     //更新月账户
                     raffleActivityAccountMonthDao.addAccountQuota(raffleActivityAccountMonth);
