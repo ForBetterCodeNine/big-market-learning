@@ -6,16 +6,18 @@ import com.project.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.project.domain.activity.model.valobj.OrderStateVO;
 import com.project.domain.activity.repository.IActivityRepository;
 import com.project.domain.activity.service.IRaffleActivitySkuStockService;
+import com.project.domain.activity.service.quota.policy.ITradePolicy;
 import com.project.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAccountQuota implements IRaffleActivitySkuStockService {
-    public RaffleActivityAccountQuotaService(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
-        super(activityRepository, defaultActivityChainFactory);
+    public RaffleActivityAccountQuotaService(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory, Map<String, ITradePolicy> tradePolicyMap) {
+        super(activityRepository, defaultActivityChainFactory, tradePolicyMap);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
 
     @Override
     protected void doSaveOrder(CreateOrderAggregate orderAggregate) {
-        activityRepository.doSaveOrder(orderAggregate);
+        activityRepository.doSaveNoPayOrder(orderAggregate);
     }
 
     @Override
@@ -75,5 +77,10 @@ public class RaffleActivityAccountQuotaService extends AbstractRaffleActivityAcc
     @Override
     public Integer queryRaffleActivityDayPartakeCount(Long activityId, String userId) {
         return activityRepository.queryRaffleActivityDayPartakeCount(activityId, userId);
+    }
+
+    @Override
+    public void updateOrder(DeliverOrderEntity deliverOrderEntity) {
+        activityRepository.updateOrder(deliverOrderEntity);
     }
 }

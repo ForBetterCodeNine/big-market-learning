@@ -3,6 +3,7 @@ package com.project.trigger.listener;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
+import com.project.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.project.domain.credit.model.entity.TradeEntity;
 import com.project.domain.credit.model.valobj.TradeNameVO;
@@ -54,6 +55,7 @@ public class RebateMessageCustomer {
                     skuRechargeOrderEntity.setUserId(rebateMessage.getUserId());
                     skuRechargeOrderEntity.setOutBusinessNo(rebateMessage.getBizId());
                     skuRechargeOrderEntity.setSku(Long.valueOf(rebateMessage.getRebateConfig()));
+                    skuRechargeOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
                     raffleActivityAccountQuotaService.createSkuRechargeOrder(skuRechargeOrderEntity);
                     break;
                 case "integral":

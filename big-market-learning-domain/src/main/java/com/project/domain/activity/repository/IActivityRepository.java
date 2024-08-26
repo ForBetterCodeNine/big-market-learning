@@ -22,7 +22,10 @@ public interface IActivityRepository {
     //查询活动数量信息
     ActivityCountEntity queryActivityCountEntityByAccountId(Long activityCountId);
 
-    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
+    void doSaveNoPayOrder(CreateOrderAggregate createOrderAggregate);
+
+    void doSaveCreditPayOrder(CreateOrderAggregate createOrderAggregate);
+
 
     void cacheActivitySkuStockCount(String cacheKey, Integer stockCount);
 
@@ -67,4 +70,6 @@ public interface IActivityRepository {
 
 
     Integer queryRaffleActivityDayPartakeCount(Long activityId, String userId);
+
+    void updateOrder(DeliverOrderEntity deliverOrderEntity);
 }

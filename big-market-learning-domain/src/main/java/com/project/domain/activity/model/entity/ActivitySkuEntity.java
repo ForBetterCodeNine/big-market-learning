@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class ActivitySkuEntity {
     private Integer stockCount;
     /** 剩余库存 */
     private Integer stockCountSurplus;
+    /** 支付金额 */
+    private BigDecimal payAmount;
 }

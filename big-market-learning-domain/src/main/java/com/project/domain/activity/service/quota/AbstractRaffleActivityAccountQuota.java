@@ -7,11 +7,14 @@ import com.project.domain.activity.model.entity.ActivitySkuEntity;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
 import com.project.domain.activity.repository.IActivityRepository;
 import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
+import com.project.domain.activity.service.quota.policy.ITradePolicy;
 import com.project.domain.activity.service.quota.rule.IActionChain;
 import com.project.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import com.project.types.enums.ResponseCode;
 import com.project.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
 
 /**
  * 抽奖活动抽象类，定义标准的流程
@@ -21,9 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityAccountQuotaSupport implements IRaffleActivityAccountQuotaService {
 
    // protected IActivityRepository activityRepository;
+    private final Map<String, ITradePolicy> tradePolicyMap;
 
-    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+
+    public AbstractRaffleActivityAccountQuota(IActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory, Map<String, ITradePolicy> tradePolicyMap) {
         super(activityRepository, defaultActivityChainFactory);
+        this.tradePolicyMap = tradePolicyMap;
     }
 
     @Override
@@ -48,8 +54,11 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         //构建订单聚合对象
         CreateOrderAggregate createOrderAggregate = buildOrderAggregate(skuRechargeOrderEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
+        //交易策略 - 【积分兑换，支付类订单】【返利无支付交易订单，直接充值到账】【订单状态变更交易类型策略】
+        ITradePolicy tradePolicy = tradePolicyMap.get(skuRechargeOrderEntity.getOrderTradeTypeVO().getCode());
+        tradePolicy.trade(createOrderAggregate);
         //保存订单
-        doSaveOrder(createOrderAggregate);
+        //doSaveOrder(createOrderAggregate);
 
         return createOrderAggregate.getActivityOrderEntity().getOrderId();
     }

@@ -1,5 +1,6 @@
 package com.project.domain.activity.service;
 
+import com.project.domain.activity.model.entity.DeliverOrderEntity;
 import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
 
 /**
@@ -15,4 +16,9 @@ public interface IRaffleActivityAccountQuotaService {
      * 查询活动账户日参与次数
      */
     Integer queryRaffleActivityDayPartakeCount(Long activityId, String userId);
+
+    /**
+     * 订单出货-积分充值
+     */
+    void updateOrder(DeliverOrderEntity deliverOrderEntity);
 }
