@@ -30,4 +30,9 @@
         select activity_id from raffle_activity
         where strategy_id = #{strategy_id}
     </select>
+    <select id="queryActivitySkuListByActivityId" resultMap="dataMap">
+        select sku, activity_count_id, stock_count, stock_count_surplus, product_amount
+        from raffle_activity_sku
+        where activity_id = #{activityId}
+    </select>
 </mapper>

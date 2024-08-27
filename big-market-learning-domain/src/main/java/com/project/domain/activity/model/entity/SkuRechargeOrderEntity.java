@@ -1,9 +1,15 @@
 package com.project.domain.activity.model.entity;
 
 import com.project.domain.activity.model.valobj.OrderTradeTypeVO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SkuRechargeOrderEntity {
 
     private String userId;

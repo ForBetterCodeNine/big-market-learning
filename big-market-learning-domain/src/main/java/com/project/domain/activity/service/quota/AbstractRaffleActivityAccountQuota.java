@@ -1,10 +1,7 @@
 package com.project.domain.activity.service.quota;
 
 import com.project.domain.activity.model.aggregate.CreateOrderAggregate;
-import com.project.domain.activity.model.entity.ActivityCountEntity;
-import com.project.domain.activity.model.entity.ActivityEntity;
-import com.project.domain.activity.model.entity.ActivitySkuEntity;
-import com.project.domain.activity.model.entity.SkuRechargeOrderEntity;
+import com.project.domain.activity.model.entity.*;
 import com.project.domain.activity.repository.IActivityRepository;
 import com.project.domain.activity.service.IRaffleActivityAccountQuotaService;
 import com.project.domain.activity.service.quota.policy.ITradePolicy;
@@ -33,13 +30,16 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
     }
 
     @Override
-    public String createSkuRechargeOrder(SkuRechargeOrderEntity skuRechargeOrderEntity) {
+    public UnpaidActivityOrderEntity createSkuRechargeOrder(SkuRechargeOrderEntity skuRechargeOrderEntity) {
         String userId = skuRechargeOrderEntity.getUserId();
         Long sku = skuRechargeOrderEntity.getSku();
         String outBusinessNo = skuRechargeOrderEntity.getOutBusinessNo();
         if(sku == null || userId == null || outBusinessNo == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
         }
+        //查询未支付订单
+        UnpaidActivityOrderEntity unpaidActivityOrderEntity = activityRepository.queryUnpaidActivityOrderEntity(skuRechargeOrderEntity);
+        if(unpaidActivityOrderEntity != null) return unpaidActivityOrderEntity;
         //通过sku查询活动信息
         ActivitySkuEntity activitySkuEntity = queryActivitySku(sku);
         //查询活动信息
@@ -59,8 +59,13 @@ public abstract class AbstractRaffleActivityAccountQuota extends RaffleActivityA
         tradePolicy.trade(createOrderAggregate);
         //保存订单
         //doSaveOrder(createOrderAggregate);
-
-        return createOrderAggregate.getActivityOrderEntity().getOrderId();
+        ActivityOrderEntity activityOrderEntity = createOrderAggregate.getActivityOrderEntity();
+        return UnpaidActivityOrderEntity.builder()
+                .userId(userId)
+                .orderId(activityOrderEntity.getOrderId())
+                .outBusinessNo(activityOrderEntity.getOutBusinessNo())
+                .payAmount(activityOrderEntity.getPayAmount())
+                .build();
     }
 
     //@Override

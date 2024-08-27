@@ -119,4 +119,16 @@ public class CreditRepository implements ICreditRepository {
             taskDao.updateTaskSendMessageFail(task);
         }
     }
+
+    @Override
+    public CreditAccountEntity queryUserCreditAccount(String userId) {
+        UserCreditAccount userCreditAccountReq = new UserCreditAccount();
+        userCreditAccountReq.setUserId(userId);
+        UserCreditAccount userCreditAccount = userCreditAccountDao.queryUserCreditAccount(userCreditAccountReq);
+        if(userCreditAccount == null) return null;
+        return CreditAccountEntity.builder()
+                .userId(userId)
+                .adjustAmount(userCreditAccount.getAvailableAmount())
+                .build();
+    }
 }

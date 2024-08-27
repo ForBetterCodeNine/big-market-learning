@@ -71,4 +71,9 @@ public class CreditAdjustServiceImpl implements ICreditAdjustService {
 
         return orderEntity.getOrderId();
     }
+
+    @Override
+    public CreditAccountEntity queryUserCreditAccount(String userId) {
+        return creditRepository.queryUserCreditAccount(userId);
+    }
 }
